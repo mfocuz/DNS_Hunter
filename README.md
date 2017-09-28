@@ -9,6 +9,7 @@ $ sudo cpan -i Module::CPANfile
 $ sudo cpanm --installdeps .
 ```
 *Note:* Sudo is required for default CPAN configuration due to it stores Perl modules in /usr directory.
+
 *Note2:* In case you have issue with AnyEvent::DNS installation, please try to install it manually with cpan
 ```
 $cpan -i AnyEvent::DNS
