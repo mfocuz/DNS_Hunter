@@ -3,7 +3,7 @@ DNS enumeration tool.
 Main idea of yet another DNS discovery tool is hashcat feature with bruting by masks.
 
 ## Installation
-From DNS_Hunter directory:
+From DNS_Hunter directory (Tested on linux):
 ```
 $ sudo cpan -i Module::CPANfile
 $ sudo cpanm --installdeps .
