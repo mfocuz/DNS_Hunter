@@ -450,9 +450,11 @@ sub report_results { # TBD Dumper is not convenent format, json is better for pa
                 $filterIP->{$ip} = $IP{$ip};
             }
         }
-        open(my $offh, '>', $OUTPUT_FILE) or die "Can not open file $OUTPUT_FILE\n";
-        print $offh $json->encode($filterIP);
-        close $offh;
+        if(defined $OUTPUT_FILE) {
+            open(my $offh, '>', $OUTPUT_FILE) or print "Error: Can not open file $OUTPUT_FILE\n";
+            print $offh $json->encode($filterIP);
+            close $offh;
+        }
         print "\n",$json->pretty->encode($filterIP),"\n";
     }
 }
@@ -500,7 +502,7 @@ sub status {
         my $completed = shift;
         my $lastResolved = shift;
         $totalCompleted += $completed;
-        print "\r"," " x 150;
+        print "\r"," " x 100;
         print "\rProgress: " . sprintf("%.2f",($totalCompleted/$totalRequests) * 100) . '%' . "\t\tLast name checked: $lastResolved";
     };
 
