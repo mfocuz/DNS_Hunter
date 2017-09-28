@@ -518,7 +518,8 @@ sub help {
     print "\t--uniq <number> (default:5)           - Uniq IP address threshold\n";
     print "\t--max-dns-query <number> (default:10) - Number of parallel DNS resolutions.\n";
     #print "\t--max-dns-gen <number>\tNumber of domains to generate before resolution\n";
-    print "\t--no-resolve only generates domain names w/o resolving\n";
+    print "\t--no-resolve                          - Only generates domain names w/o resolving\n";
+    print "\t--leet                                - Replace chars with 1337 numbers!\n";
     print "\nMask syntax:\n";
     print "\t?c - char\n\t?d - digit\n\t{sub} - subdomain\n\tAny bare chars can be used as is.\n";
     print "\nExample: ./dns_hunter --domain example.com --output-file /tmp/result --sub-list /tmp/sub.list\n";
