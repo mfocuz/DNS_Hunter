@@ -30,7 +30,7 @@ Optional parameters:
 Mask syntax:
   \t?c - char\n\t?d - digit\n\t{sub} - subdomain\n\tAny bare chars can be used as is
   
-  Example: ./dns_hunter --domain example.com --output-file /tmp/result --sub-list /tmp/sub.list
+  Example: ./dns_hunter.pl --domain example.com --output-file /tmp/result --sub-list /tmp/sub.list
     --mask '?c?c-{sub}-?d?d-{sub}-anywords'
 ```
   
