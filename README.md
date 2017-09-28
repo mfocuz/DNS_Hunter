@@ -24,11 +24,15 @@ One of the following bruting option required(or both can be used):
 Optional parameters:
   --uniq <number> (default:5)           - Uniq IP address threshold
   --max-dns-query <number> (default:10) - Number of parallel DNS resolutions
-  --max-dns-gen <number>\tNumber of domains to generate before resolution
-  --no-resolve only generates domain names w/o resolving
+  --max-dns-gen <number>                - Number of domains to generate before resolution
+  --no-resolve                          - Only generates domain names w/o resolving
+  --leet                                - Replace chars with 1337 numbers!
 
 Mask syntax:
-  \t?c - char\n\t?d - digit\n\t{sub} - subdomain\n\tAny bare chars can be used as is
+  ?c - char
+  ?d - digit
+  {sub} - subdomain 
+  Any bare chars can be used as is.
   
   Example: ./dns_hunter.pl --domain example.com --output-file /tmp/result --sub-list /tmp/sub.list
     --mask '?c?c-{sub}-?d?d-{sub}-anywords'
