@@ -231,7 +231,7 @@ sub dn_gen_mask_n_sub {
             push @words, $generated;
             $i++;
             if($LEET) {
-                my @leetSub = keys generate_1337_speak($generated);
+                my @leetSub = keys %{generate_1337_speak($generated)};
                 push @words,@leetSub;
                 $i += scalar(@leetSub);
             }
@@ -259,7 +259,7 @@ sub dn_gen_mask {
             push @words, $generated;
             $i++;
             if ($LEET) {
-                my @leetSub = keys generate_1337_speak($generated);
+                my @leetSub = keys %{generate_1337_speak($generated)};
                 push @words, @leetSub;
                 $i += scalar(@leetSub);
             }
