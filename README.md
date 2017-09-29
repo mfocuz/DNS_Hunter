@@ -2,6 +2,9 @@
 DNS enumeration tool.
 Main idea of yet another DNS discovery tool is hashcat feature with bruting by masks.
 
+## TODO
+Please pay attention that only long options supported. Sorry for that, will fix later.
+
 ## Installation
 From DNS_Hunter directory (Tested on linux):
 ```
