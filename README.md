@@ -42,7 +42,6 @@ Mask syntax:
   {sub} - subdomain 
   Any bare chars can be used as is.
   
-  Example: ./dns_hunter.pl --domain example.com --output-file /tmp/result --sub-list sub_list_for_test.txt
-    --mask '?c{sub}-?d{sub}-anywords'
+  Example: ./dns_hunter.pl --domain example.com --output-file /tmp/result --sub-list sub_list_for_test.txt --mask '?c{sub}-?d{sub}-anywords'
 ```
   
