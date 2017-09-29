@@ -32,7 +32,6 @@ One of the following bruting option required(or both can be used):
 Optional parameters:
   --uniq <number> (default:5)           - Uniq IP address threshold
   --max-dns-query <number> (default:10) - Number of parallel DNS resolutions
-  --max-dns-gen <number>                - Number of domains to generate before resolution
   --no-resolve                          - Only generates domain names w/o resolving
   --leet                                - Replace chars with 1337 numbers!
 
