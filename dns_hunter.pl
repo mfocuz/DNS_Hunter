@@ -20,6 +20,7 @@ my $UNIQ_THRESHOLD = 5;
 my $MAX_DNS_QUERY_QUEUE = 10;
 my $MAX_DNS_GENERATE;
 my $NO_RESOLVE;
+my $TAKEOVER;
 my $HELP;
 # Read options
 GetOptions(
@@ -32,6 +33,7 @@ GetOptions(
     "max-dns-query=i" => \$MAX_DNS_QUERY_QUEUE,
     "max-dns-gen=i" => \$MAX_DNS_GENERATE,
     "no-resolve" => \$NO_RESOLVE,
+    "takeover" => \$TAKEOVER,
     "help" => \$HELP,
 );
 
@@ -126,6 +128,7 @@ elsif($MASK !~ /\{sub\}/) { # just in case
 while (my $domains = $dn_generator->())
 {
     if($NO_RESOLVE) {
+        print "\n";
         report_results($domains);
         next;
     }
@@ -133,8 +136,14 @@ while (my $domains = $dn_generator->())
     bulk_resolve($domains);
 }
 print "\n\n===================\nHunting Completed!\n===================\n\n";
-print "Searching for possible subdomain takeover...\n";
-search_subdomain_takeover();
+if (defined $TAKEOVER) {
+    print "Searching for possible subdomain takeover...\n";
+    my @cnames;
+    foreach my $subDomain (keys %IP) {
+        print $subDomain,"\n";
+    }
+    search_subdomain_takeover();
+}
 report_results();
 
 #############
@@ -475,6 +484,9 @@ sub report_results { # TBD Dumper is not convenent format, json is better for pa
 }
 
 sub search_subdomain_takeover {
+    my $cnameDomains = shift;
+
+
 
 }
 
