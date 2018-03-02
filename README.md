@@ -38,6 +38,7 @@ Optional parameters:
 Mask syntax:
   ?c - char
   ?d - digit
+  ?a - digit+char
   {sub} - subdomain 
   Any bare chars can be used as is.
   
