@@ -50,7 +50,7 @@ my %DICT_1337 = (
 
 my %IP;
 my @SUBDOMAINS;
-# In theory, you can play with values od domain generation counter and domain resultion counter
+# In theory, you can play with values of domain generation counter and domain resultion counter
 # to find out best performance
 $MAX_DNS_GENERATE = $MAX_DNS_QUERY_QUEUE * 10;
 
@@ -68,16 +68,28 @@ unless(defined $DOMAIN and $DOMAIN =~ /^([a-z0-9]|\-|\.)*$/) {
     exit;
 }
 # Mask or domain list or both should be defined
-unless (defined $MASK or $INITSUB_FILENAME) {
+unless (defined $MASK or defined $INITSUB_FILENAME) {
     print "Error: At least mask or domain list should be set\n";
     print "Check --help\n";
     exit;
 }
 # If mask defined, check its syntax
-unless (defined $MASK and $MASK =~ /^([a-z0-9]|{sub}|\-|\?d|\?c)*$/) {
+if (defined $MASK and $MASK !~ /^([a-z0-9]|{sub}|\-|\?d|\?c|\?a)*$/) {
     print "Error: Mask can contain only 'a-z', '0-9', '?d', '?c', '{sub}' and '-'\n";
     print "Check --help\n";
     exit;
+}
+# If mask and sublist defined, but mask do not contain {sub}
+if (defined $MASK and defined $INITSUB_FILENAME and $MASK !~ /\{sub\}/) {
+    print "Warning: You set --sub-list option but did not used it in mask, sublist will be skipped...\n";
+    sleep 5; # Give 5 secodns to Ctrl+C
+}
+
+####################################
+# Input parameters post processing #
+####################################
+if (defined $INITSUB_FILENAME and !defined $MASK) {
+    $MASK = '{sub}';
 }
 # Read file with initial subdomain names
 if (defined $INITSUB_FILENAME) {
@@ -120,6 +132,9 @@ while (my $domains = $dn_generator->())
 
     bulk_resolve($domains);
 }
+print "\n\n===================\nHunting Completed!\n===================\n\n";
+print "Searching for possible subdomain takeover...\n";
+search_subdomain_takeover();
 report_results();
 
 #############
@@ -217,6 +232,7 @@ sub dn_gen_mask_n_sub {
     my $generator = sub {
         return undef if (1 == $last);
         my @words;
+        my $completed = 0;
         for (my $i = 0; $i < $MAX_DNS_GENERATE;) {
             my $generated = $gen_by_mask_n_sub->();
             unless (defined $generated) {
@@ -235,8 +251,9 @@ sub dn_gen_mask_n_sub {
                 push @words,@leetSub;
                 $i += scalar(@leetSub);
             }
+            $completed = ($i > $MAX_DNS_GENERATE) ? $MAX_DNS_GENERATE : $i;
         }
-        $status->(scalar(@words),$words[$#words]);
+        $status->($completed,$words[$#words]);
         return \@words;
     };
     return $generator;
@@ -258,11 +275,6 @@ sub dn_gen_mask {
             }
             push @words, $generated;
             $i++;
-            if ($LEET) {
-                my @leetSub = keys %{generate_1337_speak($generated)};
-                push @words, @leetSub;
-                $i += scalar(@leetSub);
-            }
         }
         $status->(scalar(@words),$words[$#words]);
         return \@words;
@@ -370,10 +382,13 @@ sub generate_by_mask {
     #my @chars = split('',"abc"); # for testing
     my @digits = split('',"0123456789");
     #my @digits = split('',"01"); # for testing
+    my @both;
+    push @both,@chars,@digits;
 
     my %_TYPES = (
         '?c' => \@chars,
         '?d' => \@digits,
+        '?a' => \@both,
     );
 
     # Build STATE SWITCH modulus numbers
@@ -459,6 +474,10 @@ sub report_results { # TBD Dumper is not convenent format, json is better for pa
     }
 }
 
+sub search_subdomain_takeover {
+
+}
+
 sub status {
     my $mask = shift;
 
@@ -483,6 +502,8 @@ sub status {
                 push @_TOKENS_VALUES,26;
             } elsif($iStr[$t+1] eq 'd') {
                 push @_TOKENS_VALUES,10;
+            } elsif($iStr[$t+1] eq 'a') {
+                push @_TOKENS_VALUES,36;
             }
             $t+=2;
         } else {
@@ -523,7 +544,7 @@ sub help {
     print "\t--no-resolve                          - Only generates domain names w/o resolving\n";
     print "\t--leet                                - Replace chars with 1337 numbers!\n";
     print "\nMask syntax:\n";
-    print "\t?c - char\n\t?d - digit\n\t{sub} - subdomain\n\tAny bare chars can be used as is.\n";
+    print "\t?c - char\n\t?d - digit\n\t?a - digit+char\n\t{sub} - subdomain\n\tAny bare chars can be used as is.\n";
     print "\nExample: ./dns_hunter --domain example.com --output-file /tmp/result --sub-list /tmp/sub.list\n";
     print "\t\t--mask '?c?c-{sub}-?d?d-{sub}-anywords'\n";
     print "\n";
