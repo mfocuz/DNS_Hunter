@@ -109,7 +109,9 @@ if (defined $INITSUB_FILENAME) {
 # Check if output file exists and we can write there
 if (defined $OUTPUT_FILE) {
     open(my $offh, '>', $OUTPUT_FILE) or die "Can not open output-file: $OUTPUT_FILE\n";
+    open(my $offht, '>', $OUTPUT_FILE.".takeover") or die "Can not open output-file: $OUTPUT_FILE.takeover\n";
     close $offh;
+    close $offht;
 }
 #############
 # MAIN LOOP #
@@ -145,6 +147,10 @@ if (defined $TAKEOVER) {
     if (scalar @$possibleTakeOver > 0 ) {
         print "Possible Domains Takeover Found!\nDomains:\n";
         print join("\n",@$possibleTakeOver),"\n===================";
+        if (defined $OUTPUT_FILE) {
+            open(my $fh, '>', $OUTPUT_FILE . ".takeover") or die "Can not open $OUTPUT_FILE.takeover for write";
+            print $fh join("\n", @$possibleTakeOver);
+        }
     }
 }
 report_results();
@@ -366,8 +372,8 @@ sub search_subdomain_takeover {
         my $newName = shift;
 
         foreach my $firstUnit (keys %nameChains) {
-            my $isMathced = grep {$_ eq $previousName} @{$nameChains{$firstUnit}};
-            if ($isMathced != 0) {
+            my $isMatched = grep {$_ eq $previousName} @{$nameChains{$firstUnit}};
+            if ($isMatched != 0) {
                 push @{$nameChains{$firstUnit}},$newName;
                 last;
             }
@@ -539,7 +545,7 @@ sub generate_by_mask {
     return $generator;
 }
 
-sub report_results { # TBD Dumper is not convenent format, json is better for parsing
+sub report_results {
     my $data = shift;
     if($data and ref($data) eq 'ARRAY') {
         print join("\n",@$data),"\n";
