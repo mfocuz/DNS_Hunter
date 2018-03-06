@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="Perl5LocalSettings">
+    <option name="perlInterpreter" value="Perl v5.18.2" />
     <option name="DISABLE_NO_INTERPRETER_WARNING" value="true" />
   </component>
 </project>

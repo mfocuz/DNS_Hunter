@@ -52,6 +52,7 @@ my %DICT_1337 = (
 
 my %IP;
 my @SUBDOMAINS;
+my @TAKEOVERDOMAINS;
 # In theory, you can play with values of domain generation counter and domain resultion counter
 # to find out best performance
 $MAX_DNS_GENERATE = $MAX_DNS_QUERY_QUEUE * 10;
@@ -135,14 +136,15 @@ while (my $domains = $dn_generator->())
 
     bulk_resolve($domains);
 }
-print "\n\n===================\nHunting Completed!\n===================\n\n";
+print "\n\n===================\nHunting Completed!\n===================\n";
 if (defined $TAKEOVER) {
     print "Searching for possible subdomain takeover...\n";
     my @cnames;
-    foreach my $subDomain (keys %IP) {
-        print $subDomain,"\n";
+    my $possibleTakeOver = search_subdomain_takeover(\@TAKEOVERDOMAINS);
+    if (scalar @$possibleTakeOver > 0 ) {
+        print "Possible Domains Takeover Found!\nDomains:\n";
+        print join("\n",@$possibleTakeOver),"\n===================";
     }
-    search_subdomain_takeover();
 }
 report_results();
 
@@ -307,6 +309,9 @@ sub bulk_resolve {
         my $resolved = $condvar->recv;
         next until ref($resolved) eq 'ARRAY';
         my ($domain, $entryType, $hz1, $hz2, $ip) = @$resolved;
+        if ($entryType eq "cname") {
+            push @TAKEOVERDOMAINS,$ip;
+        }
         my $dnsEntry = {$entryType => $domain};
         if (!defined $IP{$ip}) {
             $IP{$ip} = {
@@ -321,6 +326,67 @@ sub bulk_resolve {
             $IP{$ip}->{count} += 1;
         }
     }
+}
+
+sub search_subdomain_takeover {
+    my $domains = shift;
+
+    my @condvars;
+    my %loopChecker;
+    my %nameChains; # hash of arrays
+    my @possibleTakeover;
+
+    my $resolver = AnyEvent::DNS::resolver;
+    $resolver->max_outstanding($MAX_DNS_QUERY_QUEUE);
+
+    # Fill initial name chains
+    foreach (@$domains) {
+        $nameChains{$_} = [$_];
+    }
+
+    my $resolver_func = sub {
+        my $domain = shift;
+        $resolver->resolve($domain, "*", my $condvar  = AnyEvent->condvar);
+        push @condvars, [$domain,$condvar];
+    };
+
+    my $chain_searcher = sub {
+        my $previousName = shift;
+        my $newName = shift;
+
+        foreach my $firstUnit (keys %nameChains) {
+            my $isMathced = grep {$_ eq $previousName} @{$nameChains{$firstUnit}};
+            if ($isMathced != 0) {
+                push @{$nameChains{$firstUnit}},$newName;
+                last;
+            }
+        }
+    };
+
+    foreach my $d (@$domains) {
+        $resolver_func->($d);
+    }
+
+    while (my $condvar = pop @condvars) {
+        my ($d,$resolved) = ($condvar->[0],$condvar->[1]->recv);
+        # For resolved names, check if its also cname in case its cname chain, we need to find final
+        if (ref($resolved) eq 'ARRAY') {
+            my ($domain, $entryType, $hz1, $hz2, $ip) = @$resolved;
+
+            if ($entryType eq 'cname' && !defined $loopChecker{$ip}) {
+                # mark name as checked to identify loop
+                $loopChecker{$d} = 1;
+                # Add CNAME to chain
+                $chain_searcher->($domain,$ip);
+                # resolve new cname
+                $resolver_func->($ip);
+            }
+        } else {
+            push @possibleTakeover,$d;
+        }
+    }
+
+    return \@possibleTakeover;
 }
 
 # 1337 generator
@@ -483,12 +549,6 @@ sub report_results { # TBD Dumper is not convenent format, json is better for pa
     }
 }
 
-sub search_subdomain_takeover {
-    my $cnameDomains = shift;
-
-
-
-}
 
 sub status {
     my $mask = shift;
