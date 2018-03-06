@@ -2,9 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="4f8b91db-aa40-487b-85ff-ca1eb0bf6f08" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
-      <change beforePath="$PROJECT_DIR$/.idea/perl5local.xml" afterPath="$PROJECT_DIR$/.idea/perl5local.xml" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change beforePath="$PROJECT_DIR$/dns_hunter.pl" afterPath="$PROJECT_DIR$/dns_hunter.pl" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -22,16 +19,17 @@
       <file leaf-file-name="dns_hunter.pl" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/dns_hunter.pl">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="372">
-              <caret line="153" column="23" lean-forward="true" selection-start-line="153" selection-start-column="23" selection-end-line="153" selection-end-column="23" />
+            <state relative-caret-position="231">
+              <caret line="342" column="25" lean-forward="true" selection-start-line="342" selection-start-column="25" selection-end-line="342" selection-end-column="25" />
               <folding>
-                <element signature="e#1337#1432#0#Perl5" expanded="true" />
-                <element signature="e#1512#1535#0#Perl5" expanded="true" />
-                <element signature="e#2604#2640#0#Perl5" expanded="true" />
-                <element signature="e#3360#3373#0#Perl5" expanded="true" />
-                <element signature="e#4328#4341#0#Perl5" expanded="true" />
-                <element signature="e#11452#11468#0#Perl5" expanded="true" />
-                <element signature="e#12456#12457#0#Perl5" expanded="true" />
+                <element signature="e#139#164#0#Perl5" expanded="true" />
+                <element signature="e#1352#1447#0#Perl5" expanded="true" />
+                <element signature="e#1527#1550#0#Perl5" expanded="true" />
+                <element signature="e#2619#2655#0#Perl5" expanded="true" />
+                <element signature="e#3375#3388#0#Perl5" expanded="true" />
+                <element signature="e#4343#4356#0#Perl5" expanded="true" />
+                <element signature="e#11764#11780#0#Perl5" expanded="true" />
+                <element signature="e#12768#12769#0#Perl5" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -522,31 +520,31 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="perl_line_breakpoint">
           <url>file://$PROJECT_DIR$/dns_hunter.pl</url>
-          <line>375</line>
+          <line>386</line>
           <properties />
           <option name="timeStamp" value="31" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="perl_line_breakpoint">
           <url>file://$PROJECT_DIR$/dns_hunter.pl</url>
-          <line>372</line>
+          <line>383</line>
           <properties />
           <option name="timeStamp" value="32" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="perl_line_breakpoint">
           <url>file://$PROJECT_DIR$/dns_hunter.pl</url>
-          <line>384</line>
+          <line>395</line>
           <properties />
           <option name="timeStamp" value="35" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="perl_line_breakpoint">
           <url>file://$PROJECT_DIR$/dns_hunter.pl</url>
-          <line>342</line>
+          <line>353</line>
           <properties />
           <option name="timeStamp" value="37" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="perl_line_breakpoint">
           <url>file://$PROJECT_DIR$/dns_hunter.pl</url>
-          <line>357</line>
+          <line>368</line>
           <properties />
           <option name="timeStamp" value="39" />
         </line-breakpoint>
@@ -586,13 +584,14 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="e#1337#1432#0#Perl5" expanded="true" />
-            <element signature="e#1512#1535#0#Perl5" expanded="true" />
-            <element signature="e#2604#2640#0#Perl5" expanded="true" />
-            <element signature="e#3360#3373#0#Perl5" expanded="true" />
-            <element signature="e#4328#4341#0#Perl5" expanded="true" />
-            <element signature="e#11452#11468#0#Perl5" expanded="true" />
-            <element signature="e#12456#12457#0#Perl5" expanded="true" />
+            <element signature="e#139#164#0#Perl5" expanded="true" />
+            <element signature="e#1352#1447#0#Perl5" expanded="true" />
+            <element signature="e#1527#1550#0#Perl5" expanded="true" />
+            <element signature="e#2619#2655#0#Perl5" expanded="true" />
+            <element signature="e#3375#3388#0#Perl5" expanded="true" />
+            <element signature="e#4343#4356#0#Perl5" expanded="true" />
+            <element signature="e#11764#11780#0#Perl5" expanded="true" />
+            <element signature="e#12768#12769#0#Perl5" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -602,13 +601,14 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="e#1337#1432#0#Perl5" expanded="true" />
-            <element signature="e#1512#1535#0#Perl5" expanded="true" />
-            <element signature="e#2604#2640#0#Perl5" expanded="true" />
-            <element signature="e#3360#3373#0#Perl5" expanded="true" />
-            <element signature="e#4328#4341#0#Perl5" expanded="true" />
-            <element signature="e#11452#11468#0#Perl5" expanded="true" />
-            <element signature="e#12456#12457#0#Perl5" expanded="true" />
+            <element signature="e#139#164#0#Perl5" expanded="true" />
+            <element signature="e#1352#1447#0#Perl5" expanded="true" />
+            <element signature="e#1527#1550#0#Perl5" expanded="true" />
+            <element signature="e#2619#2655#0#Perl5" expanded="true" />
+            <element signature="e#3375#3388#0#Perl5" expanded="true" />
+            <element signature="e#4343#4356#0#Perl5" expanded="true" />
+            <element signature="e#11764#11780#0#Perl5" expanded="true" />
+            <element signature="e#12768#12769#0#Perl5" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -618,13 +618,14 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="e#1337#1432#0#Perl5" expanded="true" />
-            <element signature="e#1512#1535#0#Perl5" expanded="true" />
-            <element signature="e#2604#2640#0#Perl5" expanded="true" />
-            <element signature="e#3360#3373#0#Perl5" expanded="true" />
-            <element signature="e#4328#4341#0#Perl5" expanded="true" />
-            <element signature="e#11452#11468#0#Perl5" expanded="true" />
-            <element signature="e#12456#12457#0#Perl5" expanded="true" />
+            <element signature="e#139#164#0#Perl5" expanded="true" />
+            <element signature="e#1352#1447#0#Perl5" expanded="true" />
+            <element signature="e#1527#1550#0#Perl5" expanded="true" />
+            <element signature="e#2619#2655#0#Perl5" expanded="true" />
+            <element signature="e#3375#3388#0#Perl5" expanded="true" />
+            <element signature="e#4343#4356#0#Perl5" expanded="true" />
+            <element signature="e#11764#11780#0#Perl5" expanded="true" />
+            <element signature="e#12768#12769#0#Perl5" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -634,13 +635,14 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="e#1337#1432#0#Perl5" expanded="true" />
-            <element signature="e#1512#1535#0#Perl5" expanded="true" />
-            <element signature="e#2604#2640#0#Perl5" expanded="true" />
-            <element signature="e#3360#3373#0#Perl5" expanded="true" />
-            <element signature="e#4328#4341#0#Perl5" expanded="true" />
-            <element signature="e#11452#11468#0#Perl5" expanded="true" />
-            <element signature="e#12456#12457#0#Perl5" expanded="true" />
+            <element signature="e#139#164#0#Perl5" expanded="true" />
+            <element signature="e#1352#1447#0#Perl5" expanded="true" />
+            <element signature="e#1527#1550#0#Perl5" expanded="true" />
+            <element signature="e#2619#2655#0#Perl5" expanded="true" />
+            <element signature="e#3375#3388#0#Perl5" expanded="true" />
+            <element signature="e#4343#4356#0#Perl5" expanded="true" />
+            <element signature="e#11764#11780#0#Perl5" expanded="true" />
+            <element signature="e#12768#12769#0#Perl5" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -650,13 +652,14 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="e#1337#1432#0#Perl5" expanded="true" />
-            <element signature="e#1512#1535#0#Perl5" expanded="true" />
-            <element signature="e#2604#2640#0#Perl5" expanded="true" />
-            <element signature="e#3360#3373#0#Perl5" expanded="true" />
-            <element signature="e#4328#4341#0#Perl5" expanded="true" />
-            <element signature="e#11452#11468#0#Perl5" expanded="true" />
-            <element signature="e#12456#12457#0#Perl5" expanded="true" />
+            <element signature="e#139#164#0#Perl5" expanded="true" />
+            <element signature="e#1352#1447#0#Perl5" expanded="true" />
+            <element signature="e#1527#1550#0#Perl5" expanded="true" />
+            <element signature="e#2619#2655#0#Perl5" expanded="true" />
+            <element signature="e#3375#3388#0#Perl5" expanded="true" />
+            <element signature="e#4343#4356#0#Perl5" expanded="true" />
+            <element signature="e#11764#11780#0#Perl5" expanded="true" />
+            <element signature="e#12768#12769#0#Perl5" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -666,13 +669,14 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="e#1337#1432#0#Perl5" expanded="true" />
-            <element signature="e#1512#1535#0#Perl5" expanded="true" />
-            <element signature="e#2604#2640#0#Perl5" expanded="true" />
-            <element signature="e#3360#3373#0#Perl5" expanded="true" />
-            <element signature="e#4328#4341#0#Perl5" expanded="true" />
-            <element signature="e#11452#11468#0#Perl5" expanded="true" />
-            <element signature="e#12456#12457#0#Perl5" expanded="true" />
+            <element signature="e#139#164#0#Perl5" expanded="true" />
+            <element signature="e#1352#1447#0#Perl5" expanded="true" />
+            <element signature="e#1527#1550#0#Perl5" expanded="true" />
+            <element signature="e#2619#2655#0#Perl5" expanded="true" />
+            <element signature="e#3375#3388#0#Perl5" expanded="true" />
+            <element signature="e#4343#4356#0#Perl5" expanded="true" />
+            <element signature="e#11764#11780#0#Perl5" expanded="true" />
+            <element signature="e#12768#12769#0#Perl5" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -682,13 +686,14 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="e#1337#1432#0#Perl5" expanded="true" />
-            <element signature="e#1512#1535#0#Perl5" expanded="true" />
-            <element signature="e#2604#2640#0#Perl5" expanded="true" />
-            <element signature="e#3360#3373#0#Perl5" expanded="true" />
-            <element signature="e#4328#4341#0#Perl5" expanded="true" />
-            <element signature="e#11452#11468#0#Perl5" expanded="true" />
-            <element signature="e#12456#12457#0#Perl5" expanded="true" />
+            <element signature="e#139#164#0#Perl5" expanded="true" />
+            <element signature="e#1352#1447#0#Perl5" expanded="true" />
+            <element signature="e#1527#1550#0#Perl5" expanded="true" />
+            <element signature="e#2619#2655#0#Perl5" expanded="true" />
+            <element signature="e#3375#3388#0#Perl5" expanded="true" />
+            <element signature="e#4343#4356#0#Perl5" expanded="true" />
+            <element signature="e#11764#11780#0#Perl5" expanded="true" />
+            <element signature="e#12768#12769#0#Perl5" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -698,13 +703,14 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="e#1337#1432#0#Perl5" expanded="true" />
-            <element signature="e#1512#1535#0#Perl5" expanded="true" />
-            <element signature="e#2604#2640#0#Perl5" expanded="true" />
-            <element signature="e#3360#3373#0#Perl5" expanded="true" />
-            <element signature="e#4328#4341#0#Perl5" expanded="true" />
-            <element signature="e#11452#11468#0#Perl5" expanded="true" />
-            <element signature="e#12456#12457#0#Perl5" expanded="true" />
+            <element signature="e#139#164#0#Perl5" expanded="true" />
+            <element signature="e#1352#1447#0#Perl5" expanded="true" />
+            <element signature="e#1527#1550#0#Perl5" expanded="true" />
+            <element signature="e#2619#2655#0#Perl5" expanded="true" />
+            <element signature="e#3375#3388#0#Perl5" expanded="true" />
+            <element signature="e#4343#4356#0#Perl5" expanded="true" />
+            <element signature="e#11764#11780#0#Perl5" expanded="true" />
+            <element signature="e#12768#12769#0#Perl5" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -714,13 +720,14 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="e#1337#1432#0#Perl5" expanded="true" />
-            <element signature="e#1512#1535#0#Perl5" expanded="true" />
-            <element signature="e#2604#2640#0#Perl5" expanded="true" />
-            <element signature="e#3360#3373#0#Perl5" expanded="true" />
-            <element signature="e#4328#4341#0#Perl5" expanded="true" />
-            <element signature="e#11452#11468#0#Perl5" expanded="true" />
-            <element signature="e#12456#12457#0#Perl5" expanded="true" />
+            <element signature="e#139#164#0#Perl5" expanded="true" />
+            <element signature="e#1352#1447#0#Perl5" expanded="true" />
+            <element signature="e#1527#1550#0#Perl5" expanded="true" />
+            <element signature="e#2619#2655#0#Perl5" expanded="true" />
+            <element signature="e#3375#3388#0#Perl5" expanded="true" />
+            <element signature="e#4343#4356#0#Perl5" expanded="true" />
+            <element signature="e#11764#11780#0#Perl5" expanded="true" />
+            <element signature="e#12768#12769#0#Perl5" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -737,13 +744,14 @@
         <state relative-caret-position="7820">
           <caret line="460" column="0" lean-forward="false" selection-start-line="460" selection-start-column="0" selection-end-line="460" selection-end-column="0" />
           <folding>
-            <element signature="e#1337#1432#0#Perl5" expanded="true" />
-            <element signature="e#1512#1535#0#Perl5" expanded="true" />
-            <element signature="e#2604#2640#0#Perl5" expanded="true" />
-            <element signature="e#3360#3373#0#Perl5" expanded="true" />
-            <element signature="e#4328#4341#0#Perl5" expanded="true" />
-            <element signature="e#11452#11468#0#Perl5" expanded="true" />
-            <element signature="e#12456#12457#0#Perl5" expanded="true" />
+            <element signature="e#139#164#0#Perl5" expanded="true" />
+            <element signature="e#1352#1447#0#Perl5" expanded="true" />
+            <element signature="e#1527#1550#0#Perl5" expanded="true" />
+            <element signature="e#2619#2655#0#Perl5" expanded="true" />
+            <element signature="e#3375#3388#0#Perl5" expanded="true" />
+            <element signature="e#4343#4356#0#Perl5" expanded="true" />
+            <element signature="e#11764#11780#0#Perl5" expanded="true" />
+            <element signature="e#12768#12769#0#Perl5" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -760,13 +768,14 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="e#1337#1432#0#Perl5" expanded="true" />
-            <element signature="e#1512#1535#0#Perl5" expanded="true" />
-            <element signature="e#2604#2640#0#Perl5" expanded="true" />
-            <element signature="e#3360#3373#0#Perl5" expanded="true" />
-            <element signature="e#4328#4341#0#Perl5" expanded="true" />
-            <element signature="e#11452#11468#0#Perl5" expanded="true" />
-            <element signature="e#12456#12457#0#Perl5" expanded="true" />
+            <element signature="e#139#164#0#Perl5" expanded="true" />
+            <element signature="e#1352#1447#0#Perl5" expanded="true" />
+            <element signature="e#1527#1550#0#Perl5" expanded="true" />
+            <element signature="e#2619#2655#0#Perl5" expanded="true" />
+            <element signature="e#3375#3388#0#Perl5" expanded="true" />
+            <element signature="e#4343#4356#0#Perl5" expanded="true" />
+            <element signature="e#11764#11780#0#Perl5" expanded="true" />
+            <element signature="e#12768#12769#0#Perl5" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -776,13 +785,14 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="e#1337#1432#0#Perl5" expanded="true" />
-            <element signature="e#1512#1535#0#Perl5" expanded="true" />
-            <element signature="e#2604#2640#0#Perl5" expanded="true" />
-            <element signature="e#3360#3373#0#Perl5" expanded="true" />
-            <element signature="e#4328#4341#0#Perl5" expanded="true" />
-            <element signature="e#11452#11468#0#Perl5" expanded="true" />
-            <element signature="e#12456#12457#0#Perl5" expanded="true" />
+            <element signature="e#139#164#0#Perl5" expanded="true" />
+            <element signature="e#1352#1447#0#Perl5" expanded="true" />
+            <element signature="e#1527#1550#0#Perl5" expanded="true" />
+            <element signature="e#2619#2655#0#Perl5" expanded="true" />
+            <element signature="e#3375#3388#0#Perl5" expanded="true" />
+            <element signature="e#4343#4356#0#Perl5" expanded="true" />
+            <element signature="e#11764#11780#0#Perl5" expanded="true" />
+            <element signature="e#12768#12769#0#Perl5" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -792,13 +802,14 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="e#1337#1432#0#Perl5" expanded="true" />
-            <element signature="e#1512#1535#0#Perl5" expanded="true" />
-            <element signature="e#2604#2640#0#Perl5" expanded="true" />
-            <element signature="e#3360#3373#0#Perl5" expanded="true" />
-            <element signature="e#4328#4341#0#Perl5" expanded="true" />
-            <element signature="e#11452#11468#0#Perl5" expanded="true" />
-            <element signature="e#12456#12457#0#Perl5" expanded="true" />
+            <element signature="e#139#164#0#Perl5" expanded="true" />
+            <element signature="e#1352#1447#0#Perl5" expanded="true" />
+            <element signature="e#1527#1550#0#Perl5" expanded="true" />
+            <element signature="e#2619#2655#0#Perl5" expanded="true" />
+            <element signature="e#3375#3388#0#Perl5" expanded="true" />
+            <element signature="e#4343#4356#0#Perl5" expanded="true" />
+            <element signature="e#11764#11780#0#Perl5" expanded="true" />
+            <element signature="e#12768#12769#0#Perl5" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -814,16 +825,17 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/dns_hunter.pl">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="372">
-          <caret line="153" column="23" lean-forward="true" selection-start-line="153" selection-start-column="23" selection-end-line="153" selection-end-column="23" />
+        <state relative-caret-position="231">
+          <caret line="342" column="25" lean-forward="true" selection-start-line="342" selection-start-column="25" selection-end-line="342" selection-end-column="25" />
           <folding>
-            <element signature="e#1337#1432#0#Perl5" expanded="true" />
-            <element signature="e#1512#1535#0#Perl5" expanded="true" />
-            <element signature="e#2604#2640#0#Perl5" expanded="true" />
-            <element signature="e#3360#3373#0#Perl5" expanded="true" />
-            <element signature="e#4328#4341#0#Perl5" expanded="true" />
-            <element signature="e#11452#11468#0#Perl5" expanded="true" />
-            <element signature="e#12456#12457#0#Perl5" expanded="true" />
+            <element signature="e#139#164#0#Perl5" expanded="true" />
+            <element signature="e#1352#1447#0#Perl5" expanded="true" />
+            <element signature="e#1527#1550#0#Perl5" expanded="true" />
+            <element signature="e#2619#2655#0#Perl5" expanded="true" />
+            <element signature="e#3375#3388#0#Perl5" expanded="true" />
+            <element signature="e#4343#4356#0#Perl5" expanded="true" />
+            <element signature="e#11764#11780#0#Perl5" expanded="true" />
+            <element signature="e#12768#12769#0#Perl5" expanded="true" />
           </folding>
         </state>
       </provider>

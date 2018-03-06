@@ -11,6 +11,7 @@ use Getopt::Long;
 #########################
 # PERL HELL BEGINS HERE #
 #########################
+my $DEBUG = 1;
 my $DOMAIN;
 my $MASK;
 my $INITSUB_FILENAME;
@@ -300,6 +301,11 @@ sub bulk_resolve {
     $resolver->max_outstanding($MAX_DNS_QUERY_QUEUE);
     my @condvars;
 
+    if ($DEBUG == 1) {
+        open(my $fhdebug, '>', '/tmp/dns_hunter_last_names_to_resolve');
+        print $fhdebug join("\n",@$domains);
+    }
+
     foreach my $domain (@$domains) {
         $resolver->resolve($domain . '.' . $DOMAIN, "*", my $condvar  = AnyEvent->condvar);
         push @condvars, $condvar;
@@ -335,6 +341,11 @@ sub search_subdomain_takeover {
     my %loopChecker;
     my %nameChains; # hash of arrays
     my @possibleTakeover;
+
+    if ($DEBUG == 1) {
+        open(my $fhdebug, '>', '/tmp/dns_hunter_last_names_to_takeover');
+        print $fhdebug join("\n",@$domains);
+    }
 
     my $resolver = AnyEvent::DNS::resolver;
     $resolver->max_outstanding($MAX_DNS_QUERY_QUEUE);
