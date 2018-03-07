@@ -51,9 +51,10 @@ my %DICT_1337 = (
     103 => '9', 113 => '9',              # g,q
 );
 
-my %IP;
-my @SUBDOMAINS;
-my @TAKEOVERDOMAINS;
+my %IP; # All resolved names
+my @SUBDOMAINS; # Subdomain read from file
+my @POSSIBLE_TAKEOVER; # CNAME domains found
+my @TAKEOVERDOMAINS; # CNAME domains leads to unregistered domains!
 # In theory, you can play with values of domain generation counter and domain resultion counter
 # to find out best performance
 $MAX_DNS_GENERATE = $MAX_DNS_QUERY_QUEUE * 10;
@@ -113,37 +114,45 @@ if (defined $OUTPUT_FILE) {
     close $offh;
     close $offht;
 }
+
 #############
 # MAIN LOOP #
 #############
-print "Start hunting...\n";
-
+# I. DNS hunting LOOP
+print "\n\n===================\nStart Hunting...\n===================\n";
+open(my $FH_DEBUG, '>', '/tmp/dns_hunter_last_names_to_resolve') or die "Can not open debug file for write"
+    if ($DEBUG == 1);
 my $dn_generator;
-my $status = status($MASK);
+my $status_hunting = status($MASK);
 # MASK + SUBDOMAIN
 if (scalar(@SUBDOMAINS) > 0 && $MASK =~ /{sub}/) {
-    $dn_generator = dn_gen_mask_n_sub($MASK,$status);
+    $dn_generator = dn_gen_mask_n_sub($MASK,$status_hunting);
 }
 # ONLY MASK
 elsif($MASK !~ /\{sub\}/) { # just in case
-    $dn_generator = dn_gen_mask($MASK,$status);
+    $dn_generator = dn_gen_mask($MASK,$status_hunting);
 }
 
 while (my $domains = $dn_generator->())
 {
     if($NO_RESOLVE) {
-        print "\n";
-        report_results($domains);
+        print join("\n",@$domains);
         next;
     }
 
     bulk_resolve($domains);
 }
+close($FH_DEBUG)
+    if ($DEBUG == 1);
 print "\n\n===================\nHunting Completed!\n===================\n";
+
+# II. DNS takeover LOOP
 if (defined $TAKEOVER) {
-    print "Searching for possible subdomain takeover...\n";
-    my @cnames;
-    my $possibleTakeOver = search_subdomain_takeover(\@TAKEOVERDOMAINS);
+    print "========Searching for possible subdomain takeover...========\n";
+    open(my $FH_DEBUG_TO, '>', '/tmp/dns_hunter_last_names_to_takeover') or die "Can not open debug file for write"
+        if ($DEBUG == 1);
+
+    $possibleTakeOver = search_subdomain_takeover(\@POSSIBLE_TAKEOVER);
     if (scalar @$possibleTakeOver > 0 ) {
         print "Possible Domains Takeover Found!\nDomains:\n";
         print join("\n",@$possibleTakeOver),"\n===================";
@@ -152,8 +161,37 @@ if (defined $TAKEOVER) {
             print $fh join("\n", @$possibleTakeOver);
         }
     }
+
+    close $FH_DEGUB_TO if ($DEBUG == 1);
 }
-report_results();
+# III. Reporting
+# 1. DNS huntining
+print "Subdomains found:\n";
+my $filterIP = {};
+my $json = JSON->new;
+foreach my $ip (keys %IP) {
+    if ($IP{$ip}->{count} <= $UNIQ_THRESHOLD) {
+        $filterIP->{$ip} = $IP{$ip};
+    }
+}
+if(defined $OUTPUT_FILE) {
+    open(my $fh1, '>', $OUTPUT_FILE) or print "Error: Can not open file $OUTPUT_FILE\n";
+    print $fh1 $json->encode($filterIP);
+    close $fh1;
+}
+print "\n",$json->encode($filterIP),"\n";
+
+# 2. Domain Takeover
+if (defined $TAKEOVER && scalar @TAKEOVERDOMAINS > 0 ) {
+    if (defined $OUTPUT_FILE) {
+        open(my $fh2, '>', $OUTPUT_FILE . ".takeover") or die "Can not open $OUTPUT_FILE.takeover for write";
+        print $fh2 join("\n", @TAKEOVERDOMAINS);
+        close $fh2;
+    }
+    print "Possible domains takeover found:\n";
+    print join("\n",@TAKEOVERDOMAINS),"\n";
+}
+
 
 #############
 # FUNCTIONS #
@@ -308,8 +346,7 @@ sub bulk_resolve {
     my @condvars;
 
     if ($DEBUG == 1) {
-        open(my $fhdebug, '>', '/tmp/dns_hunter_last_names_to_resolve');
-        print $fhdebug join("\n",@$domains);
+        print $FH_DEGUB join("\n",@$domains);
     }
 
     foreach my $domain (@$domains) {
@@ -322,7 +359,7 @@ sub bulk_resolve {
         next until ref($resolved) eq 'ARRAY';
         my ($domain, $entryType, $hz1, $hz2, $ip) = @$resolved;
         if ($entryType eq "cname") {
-            push @TAKEOVERDOMAINS,$ip;
+            push @POSSIBLE_TAKEOVER,$ip;
         }
         my $dnsEntry = {$entryType => $domain};
         if (!defined $IP{$ip}) {
@@ -349,8 +386,7 @@ sub search_subdomain_takeover {
     my @possibleTakeover;
 
     if ($DEBUG == 1) {
-        open(my $fhdebug, '>', '/tmp/dns_hunter_last_names_to_takeover');
-        print $fhdebug join("\n",@$domains);
+        print $FH_DEGUB_TO join("\n",@$domains);
     }
 
     my $resolver = AnyEvent::DNS::resolver;
@@ -544,28 +580,6 @@ sub generate_by_mask {
 
     return $generator;
 }
-
-sub report_results {
-    my $data = shift;
-    if($data and ref($data) eq 'ARRAY') {
-        print join("\n",@$data),"\n";
-    } else {
-        my $filterIP = {};
-        my $json = JSON->new;
-        foreach my $ip (keys %IP) {
-            if ($IP{$ip}->{count} <= $UNIQ_THRESHOLD) {
-                $filterIP->{$ip} = $IP{$ip};
-            }
-        }
-        if(defined $OUTPUT_FILE) {
-            open(my $offh, '>', $OUTPUT_FILE) or print "Error: Can not open file $OUTPUT_FILE\n";
-            print $offh $json->encode($filterIP);
-            close $offh;
-        }
-        print "\n",$json->pretty->encode($filterIP),"\n";
-    }
-}
-
 
 sub status {
     my $mask = shift;
