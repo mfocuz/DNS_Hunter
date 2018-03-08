@@ -38,6 +38,10 @@ GetOptions(
     "help" => \$HELP,
 );
 
+my @BLACKLIST = (
+    'cloudflare.com'
+);
+
 my %DICT_1337 = (
     111 => '0', 79  => '0',              # O,o
     108 => '1', 73  => '1', 105 => '1',  # l,I,i
@@ -54,7 +58,12 @@ my %DICT_1337 = (
 my %IP; # All resolved names
 my @SUBDOMAINS; # Subdomain read from file
 my @POSSIBLE_TAKEOVER; # CNAME domains found
+my %CNAME_CHAINS;
+my %LOOP_CHECKER;
 my @TAKEOVERDOMAINS; # CNAME domains leads to unregistered domains!
+# GLOBAL file handlers
+my $FH_DEBUG;
+my $FH_DEBUG_TO;
 # In theory, you can play with values of domain generation counter and domain resultion counter
 # to find out best performance
 $MAX_DNS_GENERATE = $MAX_DNS_QUERY_QUEUE * 10;
@@ -114,16 +123,18 @@ if (defined $OUTPUT_FILE) {
     close $offh;
     close $offht;
 }
+my %BLACKLISTHASH = map {$_ => 1} @BLACKLIST;
 
 #############
 # MAIN LOOP #
 #############
+#####################
 # I. DNS hunting LOOP
-print "\n\n===================\nStart Hunting...\n===================\n";
-open(my $FH_DEBUG, '>', '/tmp/dns_hunter_last_names_to_resolve') or die "Can not open debug file for write"
+print "\n\nStart Hunting...\n";
+open($FH_DEBUG, '>', '/tmp/dns_hunter_last_names_to_resolve') or die "Can not open debug file for write"
     if ($DEBUG == 1);
 my $dn_generator;
-my $status_hunting = status($MASK);
+my $status_hunting = status($MASK, scalar @SUBDOMAINS);
 # MASK + SUBDOMAIN
 if (scalar(@SUBDOMAINS) > 0 && $MASK =~ /{sub}/) {
     $dn_generator = dn_gen_mask_n_sub($MASK,$status_hunting);
@@ -144,26 +155,26 @@ while (my $domains = $dn_generator->())
 }
 close($FH_DEBUG)
     if ($DEBUG == 1);
-print "\n\n===================\nHunting Completed!\n===================\n";
-
+print "\n\nHunting Completed!\n";
+#######################
 # II. DNS takeover LOOP
 if (defined $TAKEOVER) {
-    print "========Searching for possible subdomain takeover...========\n";
-    open(my $FH_DEBUG_TO, '>', '/tmp/dns_hunter_last_names_to_takeover') or die "Can not open debug file for write"
+    print "Searching for possible subdomain takeover...\n";
+    open($FH_DEBUG_TO, '>', '/tmp/dns_hunter_last_names_to_takeover') or die "Can not open debug file for write"
         if ($DEBUG == 1);
 
-    $possibleTakeOver = search_subdomain_takeover(\@POSSIBLE_TAKEOVER);
-    if (scalar @$possibleTakeOver > 0 ) {
-        print "Possible Domains Takeover Found!\nDomains:\n";
-        print join("\n",@$possibleTakeOver),"\n===================";
-        if (defined $OUTPUT_FILE) {
-            open(my $fh, '>', $OUTPUT_FILE . ".takeover") or die "Can not open $OUTPUT_FILE.takeover for write";
-            print $fh join("\n", @$possibleTakeOver);
-        }
+    my $status_takeover = status('{sub}',scalar @POSSIBLE_TAKEOVER);
+    while (scalar(@POSSIBLE_TAKEOVER) > 0) {
+        my $pop = ($MAX_DNS_GENERATE < $#POSSIBLE_TAKEOVER ) ? ($MAX_DNS_GENERATE-1) : $#POSSIBLE_TAKEOVER;
+        $pop = ($pop == 0) ? 1 : $pop;
+        my @cnames = splice(@POSSIBLE_TAKEOVER,0,$pop);
+        search_subdomain_takeover(\@cnames,$status_takeover);
     }
 
-    close $FH_DEGUB_TO if ($DEBUG == 1);
+    print "\nSearching completed!\n";
+    close $FH_DEBUG_TO if ($DEBUG == 1);
 }
+################
 # III. Reporting
 # 1. DNS huntining
 print "Subdomains found:\n";
@@ -179,7 +190,7 @@ if(defined $OUTPUT_FILE) {
     print $fh1 $json->encode($filterIP);
     close $fh1;
 }
-print "\n",$json->encode($filterIP),"\n";
+print $json->encode($filterIP),"\n";
 
 # 2. Domain Takeover
 if (defined $TAKEOVER && scalar @TAKEOVERDOMAINS > 0 ) {
@@ -188,8 +199,8 @@ if (defined $TAKEOVER && scalar @TAKEOVERDOMAINS > 0 ) {
         print $fh2 join("\n", @TAKEOVERDOMAINS);
         close $fh2;
     }
-    print "Possible domains takeover found:\n";
-    print join("\n",@TAKEOVERDOMAINS),"\n";
+    print "\nPossible domains takeover found:\n";
+    map {print join('->',@{$CNAME_CHAINS{$_}}),"\n"} @TAKEOVERDOMAINS;
 }
 
 
@@ -346,7 +357,7 @@ sub bulk_resolve {
     my @condvars;
 
     if ($DEBUG == 1) {
-        print $FH_DEGUB join("\n",@$domains);
+        print $FH_DEBUG join("\n",@$domains);
     }
 
     foreach my $domain (@$domains) {
@@ -359,7 +370,7 @@ sub bulk_resolve {
         next until ref($resolved) eq 'ARRAY';
         my ($domain, $entryType, $hz1, $hz2, $ip) = @$resolved;
         if ($entryType eq "cname") {
-            push @POSSIBLE_TAKEOVER,$ip;
+            push @POSSIBLE_TAKEOVER,$domain;
         }
         my $dnsEntry = {$entryType => $domain};
         if (!defined $IP{$ip}) {
@@ -379,22 +390,20 @@ sub bulk_resolve {
 
 sub search_subdomain_takeover {
     my $domains = shift;
+    my $status = shift;
 
     my @condvars;
-    my %loopChecker;
-    my %nameChains; # hash of arrays
     my @possibleTakeover;
 
-    if ($DEBUG == 1) {
-        print $FH_DEGUB_TO join("\n",@$domains);
-    }
+    print $FH_DEBUG_TO join("\n",@$domains)
+        if ($DEBUG == 1);
 
     my $resolver = AnyEvent::DNS::resolver;
     $resolver->max_outstanding($MAX_DNS_QUERY_QUEUE);
 
     # Fill initial name chains
     foreach (@$domains) {
-        $nameChains{$_} = [$_];
+        $CNAME_CHAINS{$_} = [$_];
     }
 
     my $resolver_func = sub {
@@ -407,11 +416,11 @@ sub search_subdomain_takeover {
         my $previousName = shift;
         my $newName = shift;
 
-        foreach my $firstUnit (keys %nameChains) {
-            my $isMatched = grep {$_ eq $previousName} @{$nameChains{$firstUnit}};
+        foreach my $firstUnit (keys %CNAME_CHAINS) {
+            my $isMatched = grep {$_ eq $previousName} @{$CNAME_CHAINS{$firstUnit}};
             if ($isMatched != 0) {
-                push @{$nameChains{$firstUnit}},$newName;
-                last;
+                push @{$CNAME_CHAINS{$firstUnit}},$newName;
+                return $firstUnit;
             }
         }
     };
@@ -420,26 +429,42 @@ sub search_subdomain_takeover {
         $resolver_func->($d);
     }
 
+    my $lastResolved;
     while (my $condvar = pop @condvars) {
         my ($d,$resolved) = ($condvar->[0],$condvar->[1]->recv);
+        $lastResolved = $d;
         # For resolved names, check if its also cname in case its cname chain, we need to find final
         if (ref($resolved) eq 'ARRAY') {
             my ($domain, $entryType, $hz1, $hz2, $ip) = @$resolved;
 
-            if ($entryType eq 'cname' && !defined $loopChecker{$ip}) {
-                # mark name as checked to identify loop
-                $loopChecker{$d} = 1;
-                # Add CNAME to chain
-                $chain_searcher->($domain,$ip);
-                # resolve new cname
-                $resolver_func->($ip);
+            # Check if resolved domain is allowed (resource like cloudflare make some problems in hunting)
+            my ($root) = $ip =~ /.*\.([A-Za-z0-9\-]*\.[A-Za-z0-9\-]*)$/;
+            if (defined $root) {
+                $root = lc $root;
+                next if (defined $BLACKLISTHASH{$root});
+            }
+
+            if ($entryType eq 'cname' && !defined $LOOP_CHECKER{$ip}) {
+                if ($ip =~ /$DOMAIN$/ ) {
+
+                    # mark name as checked to identify loop
+                    $LOOP_CHECKER{$d} = 1;
+                    # Add CNAME to chain
+                    $chain_searcher->($domain, $ip);
+                    # resolve new cname
+                    $resolver_func->($ip);
+                } elsif ($ip !~ /$DOMAIN$/) {
+                    my $_firstUnit = $chain_searcher->($d,$ip);
+                    push @TAKEOVERDOMAINS,$_firstUnit;
+                }
             }
         } else {
-            push @possibleTakeover,$d;
+            my $_firstUnit = $chain_searcher->($d,'');
+            push @TAKEOVERDOMAINS,$_firstUnit if ($d !~ /$DOMAIN$/);
         }
     }
 
-    return \@possibleTakeover;
+    $status->(scalar @$domains, $lastResolved);
 }
 
 # 1337 generator
@@ -583,6 +608,7 @@ sub generate_by_mask {
 
 sub status {
     my $mask = shift;
+    my $size = shift;
 
     my @_TOKENS_VALUES;
     my @iStr = split('',$mask);
@@ -595,7 +621,7 @@ sub status {
                 $iStr[$t + 3] eq 'b' &&
                 $iStr[$t + 4] eq '}'
             ) {
-                push @_TOKENS_VALUES, scalar(@SUBDOMAINS);
+                push @_TOKENS_VALUES, $size;
                 $t += 5;
             } else {
                 die "Error: Died while mask parsing, check syntax.\n";
