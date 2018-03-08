@@ -39,7 +39,8 @@ GetOptions(
 );
 
 my @BLACKLIST = (
-    'cloudflare.com'
+    'cloudflare.com',
+    'cloudflare.net',
 );
 
 my %DICT_1337 = (
@@ -451,7 +452,7 @@ sub search_subdomain_takeover {
                     $LOOP_CHECKER{$d} = 1;
                     # Add CNAME to chain
                     $chain_searcher->($domain, $ip);
-                    # resolve new cname
+                    # resolve new cname s
                     $resolver_func->($ip);
                 } elsif ($ip !~ /$DOMAIN$/) {
                     my $_firstUnit = $chain_searcher->($d,$ip);
