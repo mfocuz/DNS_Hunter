@@ -132,7 +132,7 @@ my %BLACKLISTHASH = map {$_ => 1} @BLACKLIST;
 #####################
 # I. DNS hunting LOOP
 print "\n\nStart Hunting...\n";
-open($FH_DEBUG, '>', '/tmp/dns_hunter_last_names_to_resolve') or die "Can not open debug file for write"
+open($FH_DEBUG, '>', '/tmp/dns_hunter_last_resolve_' . int(rand(10000000))) or die "Can not open debug file for write"
     if ($DEBUG == 1);
 my $dn_generator;
 my $status_hunting = status($MASK, scalar @SUBDOMAINS);
@@ -161,7 +161,7 @@ print "\n\nHunting Completed!\n";
 # II. DNS takeover LOOP
 if (defined $TAKEOVER) {
     print "Searching for possible subdomain takeover...\n";
-    open($FH_DEBUG_TO, '>', '/tmp/dns_hunter_last_names_to_takeover') or die "Can not open debug file for write"
+    open($FH_DEBUG_TO, '>', '/tmp/dns_hunter_last_takeover_' . int(rand(10000000))) or die "Can not open debug file for write"
         if ($DEBUG == 1);
 
     my $status_takeover = status('{sub}',scalar @POSSIBLE_TAKEOVER);
@@ -197,7 +197,7 @@ print $json->encode($filterIP),"\n";
 if (defined $TAKEOVER && scalar @TAKEOVERDOMAINS > 0 ) {
     if (defined $OUTPUT_FILE) {
         open(my $fh2, '>', $OUTPUT_FILE . ".takeover") or die "Can not open $OUTPUT_FILE.takeover for write";
-        print $fh2 join("\n", @TAKEOVERDOMAINS);
+        map {print $fh2 join('->',@{$CNAME_CHAINS{$_}}),"\n"} @TAKEOVERDOMAINS;
         close $fh2;
     }
     print "\nPossible domains takeover found:\n";
