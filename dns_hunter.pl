@@ -34,13 +34,7 @@ GetOptions(
     "max-dns-query=i" => \$MAX_DNS_QUERY_QUEUE,
     "max-dns-gen=i" => \$MAX_DNS_GENERATE,
     "no-resolve" => \$NO_RESOLVE,
-    "takeover" => \$TAKEOVER,
     "help" => \$HELP,
-);
-
-my @BLACKLIST = (
-    'cloudflare.com',
-    'cloudflare.net',
 );
 
 my %DICT_1337 = (
@@ -58,10 +52,7 @@ my %DICT_1337 = (
 
 my %IP; # All resolved names
 my @SUBDOMAINS; # Subdomain read from file
-my @POSSIBLE_TAKEOVER; # CNAME domains found
-my %CNAME_CHAINS;
-my %LOOP_CHECKER;
-my @TAKEOVERDOMAINS; # CNAME domains leads to unregistered domains!
+my @POSSIBLE_TAKEOVER;
 # GLOBAL file handlers
 my $FH_DEBUG;
 my $FH_DEBUG_TO;
@@ -124,7 +115,6 @@ if (defined $OUTPUT_FILE) {
     close $offh;
     close $offht;
 }
-my %BLACKLISTHASH = map {$_ => 1} @BLACKLIST;
 
 #############
 # MAIN LOOP #
@@ -157,26 +147,9 @@ while (my $domains = $dn_generator->())
 close($FH_DEBUG)
     if ($DEBUG == 1);
 print "\n\nHunting Completed!\n";
-#######################
-# II. DNS takeover LOOP
-if (defined $TAKEOVER) {
-    print "Searching for possible subdomain takeover...\n";
-    open($FH_DEBUG_TO, '>', '/tmp/dns_hunter_last_takeover_' . int(rand(10000000))) or die "Can not open debug file for write"
-        if ($DEBUG == 1);
 
-    my $status_takeover = status('{sub}',scalar @POSSIBLE_TAKEOVER);
-    while (scalar(@POSSIBLE_TAKEOVER) > 0) {
-        my $pop = ($MAX_DNS_GENERATE < $#POSSIBLE_TAKEOVER ) ? ($MAX_DNS_GENERATE-1) : $#POSSIBLE_TAKEOVER;
-        $pop = ($pop == 0) ? 1 : $pop;
-        my @cnames = splice(@POSSIBLE_TAKEOVER,0,$pop);
-        search_subdomain_takeover(\@cnames,$status_takeover);
-    }
-
-    print "\nSearching completed!\n";
-    close $FH_DEBUG_TO if ($DEBUG == 1);
-}
 ################
-# III. Reporting
+# II. Reporting
 # 1. DNS huntining
 print "Subdomains found:\n";
 my $filterIP = {};
@@ -192,18 +165,6 @@ if(defined $OUTPUT_FILE) {
     close $fh1;
 }
 print $json->encode($filterIP),"\n";
-
-# 2. Domain Takeover
-if (defined $TAKEOVER && scalar @TAKEOVERDOMAINS > 0 ) {
-    if (defined $OUTPUT_FILE) {
-        open(my $fh2, '>', $OUTPUT_FILE . ".takeover") or die "Can not open $OUTPUT_FILE.takeover for write";
-        map {print $fh2 join('->',@{$CNAME_CHAINS{$_}}),"\n"} @TAKEOVERDOMAINS;
-        close $fh2;
-    }
-    print "\nPossible domains takeover found:\n";
-    map {print join('->',@{$CNAME_CHAINS{$_}}),"\n"} @TAKEOVERDOMAINS;
-}
-
 
 #############
 # FUNCTIONS #
@@ -387,85 +348,6 @@ sub bulk_resolve {
             $IP{$ip}->{count} += 1;
         }
     }
-}
-
-sub search_subdomain_takeover {
-    my $domains = shift;
-    my $status = shift;
-
-    my @condvars;
-    my @possibleTakeover;
-
-    print $FH_DEBUG_TO join("\n",@$domains)
-        if ($DEBUG == 1);
-
-    my $resolver = AnyEvent::DNS::resolver;
-    $resolver->max_outstanding($MAX_DNS_QUERY_QUEUE);
-
-    # Fill initial name chains
-    foreach (@$domains) {
-        $CNAME_CHAINS{$_} = [$_];
-    }
-
-    my $resolver_func = sub {
-        my $domain = shift;
-        $resolver->resolve($domain, "*", my $condvar  = AnyEvent->condvar);
-        push @condvars, [$domain,$condvar];
-    };
-
-    my $chain_searcher = sub {
-        my $previousName = shift;
-        my $newName = shift;
-
-        foreach my $firstUnit (keys %CNAME_CHAINS) {
-            my $isMatched = grep {$_ eq $previousName} @{$CNAME_CHAINS{$firstUnit}};
-            if ($isMatched != 0) {
-                push @{$CNAME_CHAINS{$firstUnit}},$newName;
-                return $firstUnit;
-            }
-        }
-    };
-
-    foreach my $d (@$domains) {
-        $resolver_func->($d);
-    }
-
-    my $lastResolved;
-    while (my $condvar = pop @condvars) {
-        my ($d,$resolved) = ($condvar->[0],$condvar->[1]->recv);
-        $lastResolved = $d;
-        # For resolved names, check if its also cname in case its cname chain, we need to find final
-        if (ref($resolved) eq 'ARRAY') {
-            my ($domain, $entryType, $hz1, $hz2, $ip) = @$resolved;
-
-            # Check if resolved domain is allowed (resource like cloudflare make some problems in hunting)
-            my ($root) = $ip =~ /.*\.([A-Za-z0-9\-]*\.[A-Za-z0-9\-]*)$/;
-            if (defined $root) {
-                $root = lc $root;
-                next if (defined $BLACKLISTHASH{$root});
-            }
-
-            if ($entryType eq 'cname' && !defined $LOOP_CHECKER{$ip}) {
-                if ($ip =~ /$DOMAIN$/ ) {
-
-                    # mark name as checked to identify loop
-                    $LOOP_CHECKER{$d} = 1;
-                    # Add CNAME to chain
-                    $chain_searcher->($domain, $ip);
-                    # resolve new cname s
-                    $resolver_func->($ip);
-                } elsif ($ip !~ /$DOMAIN$/) {
-                    my $_firstUnit = $chain_searcher->($d,$ip);
-                    push @TAKEOVERDOMAINS,$_firstUnit;
-                }
-            }
-        } else {
-            my $_firstUnit = $chain_searcher->($d,'');
-            push @TAKEOVERDOMAINS,$_firstUnit if ($d !~ /$DOMAIN$/);
-        }
-    }
-
-    $status->(scalar @$domains, $lastResolved);
 }
 
 # 1337 generator
